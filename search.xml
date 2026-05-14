@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>SQL注入学习</title>
-    <url>/2026/05/14/new/</url>
+    <url>/blog/2026/05/14/new/</url>
     <content><![CDATA[SQL注入学习联合查询内容
 报错注入&lt;?php eval($_GET[123]); ?&gt;
 
@@ -19,7 +19,7 @@ if a = 1:    print(&quot;1&quot;)else:	print(&quot;2&quot;)
   </entry>
   <entry>
     <title>Hello World</title>
-    <url>/2026/05/14/hello-world/</url>
+    <url>/blog/2026/05/14/hello-world/</url>
     <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
 Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
 
