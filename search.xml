@@ -19,16 +19,46 @@ More info: Deployment
 ]]></content>
   </entry>
   <entry>
-    <title>SQL注入学习</title>
+    <title>网安学习</title>
     <url>/blog/2026/05/14/new/</url>
-    <content><![CDATA[SQL注入学习联合查询内容
-报错注入&lt;?php eval($_GET[123]); ?&gt;
+    <content><![CDATA[前提学习docker相关知识点容器与镜像的差别：
+1、容器基于镜像，没有镜像就无法创建容器
+2、一个镜像可以创建多个容器
+3、容器的可写层独立（修改容器A，不会对容器B产生影响）
+4、容器可以打包成新的镜像
+docker容器基本用法
+docker images	显示所有镜像docker bulid -t my-php81:v1		构建自定义php镜像，标签名为v1docker rmi + 镜像ID/镜像名:标签	删除单个镜像docker rmi -f	强制删除docker rm $(docker images -q)	批量删除docker ps 查看所有容器docker start my-nginx	启动容器docker stop my-nginx	停止容器docker restart my-nginx	重启容器docker exec -it 容器名/容器ID /bin/base	进入容器docker log 容器名	查看容器日志docker rm 容器名	删除单个已停止的容器docker rm $(docker ps -a -q)	批量删除已停止的容器
 
-if a = 1:    print(&quot;1&quot;)else:	print(&quot;2&quot;)
+docker容器中的东西复制到宿主机
+1、直接拉取：git clone
 
-]]></content>
+2、在宿主机中使用命令直接复制(使用docker images查看镜像id)docker cp 32ec2e60e1fa:/var/www/html/1.php /tmp
+
+配置代理
+1、临时代理export HTTP_PROXY=http://XXX.XXX.XXX.XXX:7777export HTTPs_PROXY=http://XXX.XXX.XXX.XXX:7777
+
+2、本地永久代理sudo vim /etc/systemd/system/docker.service.d/http-proxy.confHTTP_PROXY=http://XXX.XXX.XXX.XXX:7777HTTPS_PROXY=http://XXX.XXX.XXX.XXX:7777
+
+切换php版本
+root@bt:/usr/local/nginx/html# update-alternatives --config php
+
+
+一、信息收集谷歌搜索
+site:域名 intext:&quot;要收集的东西&quot;例如：site:域名 intext:&quot;学号&quot;浏览器搜索寻找子站：site:kidcastle.com.cn(站名) intext:&quot;管理|登录|admin|manager|root|system|后台&quot;
+
+使用第三方查找
+[网络空间测绘，网络空间安全搜索引擎，网络空间搜索引擎，安全态势感知 - FOFA网络空间测绘系统](https://fofa.info/)
+二、渗透方法学习1、XSS漏洞反射型XSS性质：混淆了前端与用户输入，一般出现在搜索框，可控制的输入，在input中出现可输入值value
+原理：没有对用户输入做过滤，导致用户输入js代码可以反射到页面中(把用户的输入当作网页代码解析了)
+防范措施：
+1、.htmlspecialchars(将js代码转换成html实体，用户无法输入js特殊字符)
+2、输入白名单校验
+3、过滤url参数与跳转
+一般网页包含三种编码urlcode、HTML实体编码、js
+解码优先级HTML实体编码---&gt;urlencode---&gt;jsunicode
+html实体编码不能编码数据内容，但是可以编码标签和属性值js的unicode编码不能编码符号urlencode编码包括其他两类但不能对协议编码]]></content>
       <categories>
-        <category>渗透测试</category>
+        <category>渗透知识点</category>
       </categories>
       <tags>
         <tag>Web安全</tag>
