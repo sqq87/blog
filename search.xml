@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/blog/2026/05/14/hello-world/</url>
+    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
+
+More info: Writing
+Run server$ hexo server
+
+More info: Server
+Generate static files$ hexo generate
+
+More info: Generating
+Deploy to remote sites$ hexo deploy
+
+More info: Deployment
+]]></content>
+  </entry>
+  <entry>
+    <title>网安学习</title>
+    <url>/blog/2026/05/14/new/</url>
+    <content><![CDATA[前提学习docker相关知识点容器与镜像的差别：
+1、容器基于镜像，没有镜像就无法创建容器
+2、一个镜像可以创建多个容器
+3、容器的可写层独立（修改容器A，不会对容器B产生影响）
+4、容器可以打包成新的镜像
+docker容器基本用法
+docker images	显示所有镜像docker bulid -t my-php81:v1		构建自定义php镜像，标签名为v1docker rmi + 镜像ID/镜像名:标签	删除单个镜像docker rmi -f	强制删除docker rm $(docker images -q)	批量删除docker ps 查看所有容器docker start my-nginx	启动容器docker stop my-nginx	停止容器docker restart my-nginx	重启容器docker exec -it 容器名/容器ID /bin/base	进入容器docker log 容器名	查看容器日志docker rm 容器名	删除单个已停止的容器docker rm $(docker ps -a -q)	批量删除已停止的容器
+
+docker容器中的东西复制到宿主机
+1、直接拉取：git clone
+
+2、在宿主机中使用命令直接复制(使用docker images查看镜像id)docker cp 32ec2e60e1fa:/var/www/html/1.php /tmp
+
+配置代理
+1、临时代理export HTTP_PROXY=http://XXX.XXX.XXX.XXX:7777export HTTPs_PROXY=http://XXX.XXX.XXX.XXX:7777
+
+2、本地永久代理sudo vim /etc/systemd/system/docker.service.d/http-proxy.confHTTP_PROXY=http://XXX.XXX.XXX.XXX:7777HTTPS_PROXY=http://XXX.XXX.XXX.XXX:7777
+
+切换php版本
+root@bt:/usr/local/nginx/html# update-alternatives --config php
+
+
+一、信息收集谷歌搜索
+site:域名 intext:&quot;要收集的东西&quot;例如：site:域名 intext:&quot;学号&quot;浏览器搜索寻找子站：site:kidcastle.com.cn(站名) intext:&quot;管理|登录|admin|manager|root|system|后台&quot;
+
+使用第三方查找
+[网络空间测绘，网络空间安全搜索引擎，网络空间搜索引擎，安全态势感知 - FOFA网络空间测绘系统](https://fofa.info/)
+二、渗透方法学习1、XSS漏洞反射型XSS性质：混淆了前端与用户输入，一般出现在搜索框，可控制的输入，在input中出现可输入值value
+原理：没有对用户输入做过滤，导致用户输入js代码可以反射到页面中(把用户的输入当作网页代码解析了)
+防范措施：
+1、.htmlspecialchars(将js代码转换成html实体，用户无法输入js特殊字符)
+2、输入白名单校验
+3、过滤url参数与跳转
+一般网页包含三种编码urlcode、HTML实体编码、js
+解码优先级HTML实体编码---&gt;urlencode---&gt;jsunicode
+html实体编码不能编码数据内容，但是可以编码标签和属性值js的unicode编码不能编码符号urlencode编码包括其他两类但不能对协议编码
+
+具体操作
+这里以pikachu靶场为示例：
+在这关中输入&lt;script&gt;alert(1)&lt;/script&gt;时发现输入过长了，点击F12更改属性值为100，然后输入即可通过
+
+linux提权cronjobs提权定时任务提权
+**产生原因：**定时任务被设定以更高的用户权限执行，并且任务文件对其他用户有读写权限，使得其他用户可以更改该文件中的内容
+# Example of job definition:# .---------------- minute (0 - 59)# |  .------------- hour (0 - 23)# |  |  .---------- day of month (1 - 31)# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat# |  |  |  |  |# *  *  *  *  * user-name command to be executed# 分	时  天 周 年 利用那个用户	执行命令
+
+shaodow提权（最不可能成功的）通过/etc/shadow文件提权的方法
+先通过信息收集—&gt;收集子域名—&gt;利用漏洞拿下了一个网站的webshell
+产生原因：由于操作失误，使/etc/shadow对其他用户有读写权限，因此其他用户可以更改加密后的密码
+**具体操作：**由于有该文件的写权限，可以删除原来账户的密码，然后修改成自己生成的哈希密码
+/etc/shadow文件的内容含义：
+linux的密码信息保存在两个文件中，分别为/etc/passwd和/etc/shadow其中/etc/shadow文件中包含9个字段，用:隔离开来
+1、用户名2、加密后的密码3、上次修改密码的时间（从1970.1.1开始的总天数）4、两次修改密码间隔的最少天数，如为0则没有限制5、两次修改密码间隔的最多天数，表示该用户的密码会在多久之后过期，如为99999则没有限制6、提前多少天警告用户密码将过期7、在密码过期之后多少天禁用该用户8、用户过期日期(从1970.1.1开始的总天数)，如为0，则该用户永久可用9、保留，未来使用
+
+sudo提权SUID提权ubuntu 20之前是可以直接成功的
+SUID成功的前提时命令有suid权限，并且该命令在执行时可以执行其他命令
+**原理：**由于某些命令的执行需要root权限，在命令执行时普通用户的权限直接提升为root，命令结束后 又会回到普通用户
+比如：
+find	#这个在运行的时候是可以执行命令的find exec 	#参数执行命令用的find exec id	#执行时会显示为root，无论为普通用户还是，都会显示rootfind / -perm -u=s -type f 2&gt; /dev/null	#查找有suid的文件，并将错误输出重定向到黑目录中去然后使用xxd
+
+暴力破解提权]]></content>
+      <categories>
+        <category>渗透知识点</category>
+      </categories>
+      <tags>
+        <tag>Web安全</tag>
+        <tag>SQL注入</tag>
+      </tags>
+  </entry>
+</search>
