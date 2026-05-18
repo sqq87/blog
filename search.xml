@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/blog/2026/05/14/hello-world/</url>
+    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
+
+More info: Writing
+Run server$ hexo server
+
+More info: Server
+Generate static files$ hexo generate
+
+More info: Generating
+Deploy to remote sites$ hexo deploy
+
+More info: Deployment
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/blog/2026/05/18/project/</url>
+    <content><![CDATA[php反序列化初步体验#3.php&lt;?php$txt = $_GET[&quot;txt&quot;];$file = $_GET[&quot;file&quot;];$password = $_GET[&quot;password&quot;];if(isset($txt) &amp;&amp; (file_get_contents($txt, &#x27;r&#x27;) === &quot;welcome to the bugkuctf&quot;))&#123;    echo &quot;hello friend!&lt;br&gt;&quot;;    if(preg_match(&quot;/flag/&quot;, $file))    &#123;        echo &quot;不能现在就给你flag哦&quot;;        exit();    &#125;    else    &#123;        // 文件包含 包含的数据 用户可控        include($file);        // $password 就要是一个对象了 $password 就要用户传递一个序列化的值        $password = unserialize($password);        // 触发__tostring        echo $password;    &#125;&#125;else&#123;    echo &quot;you are not the number of bugku ! &quot;;&#125;?&gt;
+
+#hint.php&lt;?phpclass Flag&#123;//flag.php    public $file;    // 这里有点问题 第一__tostring  file_get_contents 我们的目标是读文件 $file    public function __tostring()&#123;        if(isset($this-&gt;file))&#123;            echo file_get_contents($this-&gt;file);            echo &quot;&lt;br&gt;&quot;;            return (&quot;good&quot;);        &#125;    &#125;&#125;?&gt;
+
+#flag.txtFlag&#123;165151daw1d51ad951&#125;
+
+
+]]></content>
+  </entry>
+  <entry>
     <title>网安学习</title>
     <url>/blog/2026/05/14/new/</url>
     <content><![CDATA[前提学习docker相关知识点容器与镜像的差别：
@@ -69,7 +99,95 @@ find	#这个在运行的时候是可以执行命令的find exec 	#参数执行�
 hydra -l root -P passlist.txt ssh://192.168.0.1
 跳板文件提权当不能直接提权至root权限时，先通过提权到其他普通用户，在通过该用户提权到root用户
 条件过于苛刻，必须看到普通用户密码
-内核提权#使用内核提权的三个步骤：	#1、收集信息：确认主机linux发行版本号，内核版本号	#2、查找漏洞：根据发行版本号和内核版本号搜索可利用的内核漏洞	#3、执行攻击：下载漏洞利用EXP、编译exp、执行expuname -r	#获取内核号]]></content>
+内核提权#使用内核提权的三个步骤：	#1、收集信息：确认主机linux发行版本号，内核版本号	#2、查找漏洞：根据发行版本号和内核版本号搜索可利用的内核漏洞	#3、执行攻击：下载漏洞利用EXP、编译exp、执行expuname -r	#获取内核号
+
+php反序列化序列化的功能：便于存储
+反序列化漏洞的本质：用户可控的反序列化字符串，从而篡改对象的属性，触发类里的危险魔术方法(魔术方法+用户可控数据)
+魔术方法
+
+
+
+方法名
+作用
+作用位置
+
+
+
+__construct
+构造函数，在创建对象时候初始化对象，一般用于对变量赋初值，构造函数 类初始 类实例化 new xxx自动执行，重要
+变量赋初值，构造函数，类初始 ，类实例化
+
+
+__destruct
+析构函数，和构造函数相反，在对象不再被使用时(将所有对象的引用设为null)或者程序退出时自动调用 当类执行结束后自动执行**(用的多)**
+类执行结束时
+
+
+__toString
+当一个对象被当作一个字符串被调用，把类当作字符串使用时触发，返回值需要为字符串，例如echo打印对象就会调用此方法**(相当重要)**
+打印，拼接
+
+
+__wakeup()
+使用unserializ时触发，反序列化恢复对象之前调用该方法
+当反序列化时执行
+
+
+__sleep()
+使用serialize时触发，再对象被序列化前自动调用，该函数需要返回以类成员变量名作为元素的数组(该数组里的元素会影响类成员变量是否被序列化，只有出现在该数组里的成员变量才会被序列化)
+序列化时执行
+
+
+__destruct()
+在对象被销毁时触发
+在对象被销毁时触发
+
+
+__call()
+在对象中调用不可访问的方法时触发，即当调用对象中不存在的方法时会自动调用该方法**(相当重要)**
+调用不可访问的方法时
+
+
+__callStatic()
+在静态上下文中调用不可访问的方法时触发
+静态上下文中调用不可访问的方法时
+
+
+__get()
+读取不可访问的属性的值时会被调用（不可访问包括私有属性，或者没有被初始化的属性）用的多
+读取不可访问的属性的值时
+
+
+__isset()
+在给不可访问属性调用isset()或empty()时触发
+给不可访问属性调用isset()或empty()时
+
+
+__set()
+在给不可访问属性赋值时，即调用私有属性的时候会自动执行
+给不可访问属性赋值时
+
+
+__unset()
+当对不可访问属性调用unset()时触发
+对不可访问属性调用unset()时
+
+
+__invoke()
+当脚本尝试将对象调用为函数时触发，用的多
+
+
+
+示例：
+&lt;?phpclass stu&#123;    public $team = &#x27;joker&#x27;;    private $team_name = &#x27;jojoo&#x27;;    protected $team_group = &#x27;biuviu&#x27;;    function hahaha()&#123;        $this-&gt;$team_member = &#x27;ale&#x27;;    &#125;&#125;$object = new stu();echo serialize($object);?&gt;#序列化后：O:3:&quot;stu&quot;:3:&#123;s:4:&quot;team&quot;;s:5:&quot;joker&quot;;s:14:&quot;stuteam_name&quot;;s:5:&quot;jojoo&quot;;s:13:&quot;*team_group&quot;;s:6:&quot;biuviu&quot;;&#125;O:对象 3字节 stu:值  3个属性s:字符串    4字节   team:属性名s:字符串    5字节   joker:属性值s:字符串    14字节   stuteam_name:属性名s:字符串    5字节   jojoo:属性值s:字符串    13字节  *team_group:属性名s:字符串    6字节   biuviu:属性值总结：在php中私有属性序列化后会加类名，并且会加\x00多两个字符，保护属性的属性名前会加*，多3个字符
+
+
+
+#序列化格式中字母的含义a -array数组						 b	-boolean布尔d -double双浮点					i	-integer整数o -common object公共方法			r	-reference引用s -string字符串					c	-custom object自定义方法O -class					N	-NULLR -pointer reference		U	-unicode string
+
+反序列化目的：就是RCE执行命令
+反序列化的过程就是变量替换的过程
+]]></content>
       <categories>
         <category>渗透知识点</category>
       </categories>
@@ -77,23 +195,5 @@ hydra -l root -P passlist.txt ssh://192.168.0.1
         <tag>Web安全</tag>
         <tag>SQL注入</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/blog/2026/05/14/hello-world/</url>
-    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
-
-More info: Writing
-Run server$ hexo server
-
-More info: Server
-Generate static files$ hexo generate
-
-More info: Generating
-Deploy to remote sites$ hexo deploy
-
-More info: Deployment
-]]></content>
   </entry>
 </search>
