@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/blog/2026/05/14/hello-world/</url>
-    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
-
-More info: Writing
-Run server$ hexo server
-
-More info: Server
-Generate static files$ hexo generate
-
-More info: Generating
-Deploy to remote sites$ hexo deploy
-
-More info: Deployment
-]]></content>
-  </entry>
-  <entry>
     <title>网安学习</title>
     <url>/blog/2026/05/14/new/</url>
     <content><![CDATA[前提学习docker相关知识点容器与镜像的差别：
@@ -62,7 +44,8 @@ html实体编码不能编码数据内容，但是可以编码标签和属性值j
 这里以pikachu靶场为示例：
 在这关中输入&lt;script&gt;alert(1)&lt;/script&gt;时发现输入过长了，点击F12更改属性值为100，然后输入即可通过
 
-linux提权cronjobs提权定时任务提权
+linux提权成功率排名:内核提权&gt;SUID提权&gt;Cronjobs&gt;查找敏感文件
+cronjobs提权定时任务提权
 **产生原因：**定时任务被设定以更高的用户权限执行，并且任务文件对其他用户有读写权限，使得其他用户可以更改该文件中的内容
 # Example of job definition:# .---------------- minute (0 - 59)# |  .------------- hour (0 - 23)# |  |  .---------- day of month (1 - 31)# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat# |  |  |  |  |# *  *  *  *  * user-name command to be executed# 分	时  天 周 年 利用那个用户	执行命令
 
@@ -80,7 +63,13 @@ SUID成功的前提时命令有suid权限，并且该命令在执行时可以执
 比如：
 find	#这个在运行的时候是可以执行命令的find exec 	#参数执行命令用的find exec id	#执行时会显示为root，无论为普通用户还是，都会显示rootfind / -perm -u=s -type f 2&gt; /dev/null	#查找有suid的文件，并将错误输出重定向到黑目录中去然后使用xxd
 
-暴力破解提权]]></content>
+暴力破解提权 **实质：**使用ssh来暴力破解root密码
+实用性低，因为直接使用ssh去爆破会被防火墙拦截并且封锁ip
+工具：hydra
+hydra -l root -P passlist.txt ssh://192.168.0.1
+跳板文件提权当不能直接提权至root权限时，先通过提权到其他普通用户，在通过该用户提权到root用户
+条件过于苛刻，必须看到普通用户密码
+内核提权#使用内核提权的三个步骤：	#1、收集信息：确认主机linux发行版本号，内核版本号	#2、查找漏洞：根据发行版本号和内核版本号搜索可利用的内核漏洞	#3、执行攻击：下载漏洞利用EXP、编译exp、执行expuname -r	#获取内核号]]></content>
       <categories>
         <category>渗透知识点</category>
       </categories>
@@ -88,5 +77,23 @@ find	#这个在运行的时候是可以执行命令的find exec 	#参数执行�
         <tag>Web安全</tag>
         <tag>SQL注入</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/blog/2026/05/14/hello-world/</url>
+    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
+
+More info: Writing
+Run server$ hexo server
+
+More info: Server
+Generate static files$ hexo generate
+
+More info: Generating
+Deploy to remote sites$ hexo deploy
+
+More info: Deployment
+]]></content>
   </entry>
 </search>
